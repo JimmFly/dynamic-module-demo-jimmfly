@@ -1,0 +1,29 @@
+{
+  "name": "dynamic-module-executor",
+  "version": "1.0.0",
+  "description": "A dynamic module executor with hot reloading capabilities",
+  "main": "main.ts",
+  "scripts": {
+    "start": "npx ts-node main.ts",
+    "dev": "npx ts-node main.ts",
+    "build": "npx tsc"
+  },
+  "dependencies": {
+    "@types/node": "^24.1.0",
+    "sqlite3": "^5.1.6",
+    "ts-node": "^10.9.2"
+  },
+  "keywords": [
+    "dynamic",
+    "module",
+    "hot-reload",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "typescript": "^5.8.3"
+  }
+}
