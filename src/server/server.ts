@@ -76,6 +76,9 @@ export class DynamicModuleServer {
         });
       });
 
+      // Increase max listeners to prevent warning during development
+      this.server.setMaxListeners(20);
+
       // Set up server error handling
       this.server.on('error', (error: any) => {
         if (error.code === 'EADDRINUSE') {
@@ -107,11 +110,14 @@ export class DynamicModuleServer {
    */
   public async stop(): Promise<void> {
     if (!this.server) {
-      logger.warn('Server is not running');
+      logger.debug('Server is not running, nothing to stop');
       return;
     }
 
     try {
+      // Remove all listeners to prevent memory leaks
+      this.server.removeAllListeners();
+      
       // Close server
       await new Promise<void>((resolve, reject) => {
         this.server!.close((error) => {
@@ -134,7 +140,7 @@ export class DynamicModuleServer {
       logger.info('Database connection closed');
     } catch (error) {
       logger.error('Failed to stop server:', error);
-      throw error;
+      // Don't throw error to prevent infinite loop in error handlers
     }
   }
 

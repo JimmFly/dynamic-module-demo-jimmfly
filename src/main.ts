@@ -22,26 +22,42 @@ async function main(): Promise<void> {
     // Handle graceful shutdown
     process.on('SIGINT', async () => {
       logger.info('\n📝 Received SIGINT, shutting down gracefully...');
-      await server.stop();
+      try {
+        await server.stop();
+      } catch (stopError) {
+        logger.error('Error during shutdown:', stopError);
+      }
       process.exit(0);
     });
 
     process.on('SIGTERM', async () => {
       logger.info('\n📝 Received SIGTERM, shutting down gracefully...');
-      await server.stop();
+      try {
+        await server.stop();
+      } catch (stopError) {
+        logger.error('Error during shutdown:', stopError);
+      }
       process.exit(0);
     });
 
     // Handle uncaught exceptions
     process.on('uncaughtException', async (error) => {
       logger.error('💥 Uncaught Exception:', error);
-      await server.stop();
+      try {
+        await server.stop();
+      } catch (stopError) {
+        logger.error('Error during shutdown:', stopError);
+      }
       process.exit(1);
     });
 
     process.on('unhandledRejection', async (reason, promise) => {
       logger.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
-      await server.stop();
+      try {
+        await server.stop();
+      } catch (stopError) {
+        logger.error('Error during shutdown:', stopError);
+      }
       process.exit(1);
     });
   } catch (error) {
