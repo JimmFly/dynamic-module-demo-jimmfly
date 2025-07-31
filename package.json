@@ -1,29 +1,38 @@
 {
   "name": "dynamic-module-executor",
   "version": "1.0.0",
-  "description": "A dynamic module executor with hot reloading capabilities",
-  "main": "main.ts",
+  "description": "A high-performance dynamic module executor with hot reloading capabilities",
+  "main": "dist/src/main.js",
   "scripts": {
-    "start": "npx ts-node main.ts",
-    "dev": "npx ts-node main.ts",
-    "build": "npx tsc"
+    "start": "npm run build && node dist/src/main.js",
+    "dev": "ts-node src/main.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prestart": "npm run clean && npm run build",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json}\""
   },
   "dependencies": {
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
     "@types/node": "^24.1.0",
-    "sqlite3": "^5.1.6",
-    "ts-node": "^10.9.2"
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "keywords": [
     "dynamic",
     "module",
     "hot-reload",
-    "sqlite"
+    "sqlite",
+    "typescript",
+    "performance"
   ],
   "author": "",
   "license": "MIT",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
-    "typescript": "^5.8.3"
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

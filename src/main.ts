@@ -1,0 +1,61 @@
+#!/usr/bin/env node
+
+/**
+ * Dynamic Module Executor - Main Entry Point
+ * A high-performance TypeScript/JavaScript module execution server
+ */
+
+import { server } from './server/server';
+import { logger } from './utils/logger';
+
+/**
+ * Main application entry point
+ */
+async function main(): Promise<void> {
+  try {
+    logger.info('🚀 Starting Dynamic Module Executor...');
+
+    // Initialize and start server
+    await server.initialize();
+    await server.start();
+
+    // Handle graceful shutdown
+    process.on('SIGINT', async () => {
+      logger.info('\n📝 Received SIGINT, shutting down gracefully...');
+      await server.stop();
+      process.exit(0);
+    });
+
+    process.on('SIGTERM', async () => {
+      logger.info('\n📝 Received SIGTERM, shutting down gracefully...');
+      await server.stop();
+      process.exit(0);
+    });
+
+    // Handle uncaught exceptions
+    process.on('uncaughtException', async (error) => {
+      logger.error('💥 Uncaught Exception:', error);
+      await server.stop();
+      process.exit(1);
+    });
+
+    process.on('unhandledRejection', async (reason, promise) => {
+      logger.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
+      await server.stop();
+      process.exit(1);
+    });
+  } catch (error) {
+    logger.error('💥 Failed to start application:', error);
+    process.exit(1);
+  }
+}
+
+// Start the application
+if (require.main === module) {
+  main().catch((error) => {
+    logger.error('💥 Application startup failed:', error);
+    process.exit(1);
+  });
+}
+
+export { server };
