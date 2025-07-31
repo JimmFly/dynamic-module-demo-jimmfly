@@ -1,5 +1,5 @@
 /**
- * Configuration constants for the Dynamic Module Executor
+ * Configuration constants for the Dynamic Module Demo Jimmfly
  */
 
 import { ServerConfig } from '../types';

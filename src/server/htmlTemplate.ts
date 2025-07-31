@@ -13,7 +13,7 @@ export class HtmlTemplate {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Dynamic Module Executor</title>
+    <title>🚀 Dynamic Module Demo Jimmfly</title>
     <style>
         ${this.getCSS()}
     </style>
@@ -21,7 +21,7 @@ export class HtmlTemplate {
 <body>
     <div class="container">
         <header class="header">
-            <h1>🚀 Dynamic Module Executor</h1>
+            <h1>🚀 Dynamic Module Demo Jimmfly</h1>
             <p class="subtitle">Execute TypeScript functions dynamically with hot reloading</p>
         </header>
         

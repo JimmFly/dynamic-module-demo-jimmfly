@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Dynamic Module Executor - Main Entry Point
+ * Dynamic Module Demo Jimmfly - Main Entry Point
  * A high-performance TypeScript/JavaScript module execution server
  */
 
@@ -13,7 +13,7 @@ import { logger } from './utils/logger';
  */
 async function main(): Promise<void> {
   try {
-    logger.info('🚀 Starting Dynamic Module Executor...');
+    logger.info('🚀 Starting Dynamic Module Demo Jimmfly...');
 
     // Initialize and start server
     await server.initialize();

@@ -1,5 +1,5 @@
 /**
- * Shared type definitions for the Dynamic Module Executor
+ * Shared type definitions for the Dynamic Module Demo Jimmfly
  */
 
 // Parameter interface for function signatures

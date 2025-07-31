@@ -1,5 +1,5 @@
 /**
- * Main HTTP server for the Dynamic Module Executor
+ * Main HTTP server for the Dynamic Module Demo Jimmfly
  */
 
 import { createServer, Server } from 'http';

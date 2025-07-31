@@ -1,7 +1,7 @@
 {
-  "name": "dynamic-module-executor",
+  "name": "dynamic-module-demo-jimmfly",
   "version": "1.0.0",
-  "description": "A high-performance dynamic module executor with hot reloading capabilities",
+  "description": "A high-performance dynamic module demo with hot reloading capabilities",
   "main": "dist/src/main.js",
   "scripts": {
     "start": "npm run build && node dist/src/main.js",

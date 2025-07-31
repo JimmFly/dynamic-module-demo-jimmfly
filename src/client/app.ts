@@ -1,5 +1,5 @@
 /**
- * Dynamic Module Executor - Frontend TypeScript
+ * Dynamic Module Demo Jimmfly - Frontend TypeScript
  * Refactored modular client application
  */
 

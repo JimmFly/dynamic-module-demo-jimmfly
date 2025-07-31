@@ -1,5 +1,5 @@
 /**
- * Logging utility for the Dynamic Module Executor
+ * Logging utility for the Dynamic Module Demo Jimmfly
  */
 
 import { currentLogLevel, LOG_LEVELS } from './config';
