@@ -14,6 +14,7 @@ import { moduleManager } from '../modules/moduleManager';
 export class DynamicModuleServer {
   private server: Server | null = null;
   private port: number = CONFIG.DEFAULT_PORT;
+  private isShuttingDown: boolean = false;
 
   /**
    * Initialize the server
@@ -106,21 +107,30 @@ export class DynamicModuleServer {
   }
 
   /**
-   * Stop the server
+   * Stop the server with optimized shutdown process
    */
   public async stop(): Promise<void> {
-    if (!this.server) {
-      logger.debug('Server is not running, nothing to stop');
+    if (!this.server || this.isShuttingDown) {
+      logger.debug('Server is not running or already shutting down, nothing to stop');
       return;
     }
+
+    this.isShuttingDown = true;
+    const startTime = Date.now();
+    logger.info('Starting server shutdown...');
 
     try {
       // Remove all listeners to prevent memory leaks
       this.server.removeAllListeners();
       
-      // Close server
-      await new Promise<void>((resolve, reject) => {
+      // Create promises for parallel shutdown operations
+      const serverClosePromise = new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Server close timeout after 5 seconds'));
+        }, 5000);
+
         this.server!.close((error) => {
+          clearTimeout(timeout);
           if (error) {
             reject(error);
           } else {
@@ -129,19 +139,56 @@ export class DynamicModuleServer {
         });
       });
 
-      this.server = null;
-      logger.info('Server stopped');
+      const dbClosePromise = this.closeWithTimeout(
+        () => dbManager.close(),
+        3000,
+        'Database close timeout'
+      );
 
-      // Stop file watcher
+      // Stop file watcher immediately (synchronous operation)
       moduleManager.stopWatcher();
 
-      // Close database connection
-      await dbManager.close();
-      logger.info('Database connection closed');
+      // Wait for server and database to close in parallel
+      await Promise.allSettled([
+        serverClosePromise,
+        dbClosePromise
+      ]);
+
+      this.server = null;
+      this.isShuttingDown = false;
+      const duration = Date.now() - startTime;
+      logger.info(`Server stopped successfully in ${duration}ms`);
     } catch (error) {
-      logger.error('Failed to stop server:', error);
+      const duration = Date.now() - startTime;
+      logger.error(`Failed to stop server after ${duration}ms:`, error);
+      this.isShuttingDown = false;
       // Don't throw error to prevent infinite loop in error handlers
     }
+  }
+
+  /**
+   * Execute a promise with timeout
+   */
+  private async closeWithTimeout<T>(
+    operation: () => Promise<T>,
+    timeoutMs: number,
+    timeoutMessage: string
+  ): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error(timeoutMessage));
+      }, timeoutMs);
+
+      operation()
+        .then((result) => {
+          clearTimeout(timeout);
+          resolve(result);
+        })
+        .catch((error) => {
+          clearTimeout(timeout);
+          reject(error);
+        });
+    });
   }
 
   /**

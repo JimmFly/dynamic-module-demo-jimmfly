@@ -9,6 +9,7 @@ import { logger } from '../utils/logger';
 
 export class DatabaseManager {
   private db: sqlite3.Database | null = null;
+  private isClosing: boolean = false;
 
   /**
    * Initialize SQLite database connection and create tables
@@ -140,18 +141,22 @@ export class DatabaseManager {
    */
   public async close(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.db) {
+      if (!this.db || this.isClosing) {
+        logger.debug('Database is not open or already closing');
         resolve();
         return;
       }
 
+      this.isClosing = true;
       this.db.close((err) => {
         if (err) {
           logger.error('Failed to close database:', err.message);
+          this.isClosing = false;
           reject(err);
         } else {
           logger.info('Database connection closed');
           this.db = null;
+          this.isClosing = false;
           resolve();
         }
       });
